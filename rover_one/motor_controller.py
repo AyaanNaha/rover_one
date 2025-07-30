@@ -1,6 +1,7 @@
 import rclpy
 from rclpy.node import Node
 from geometry_msgs.msg import Twist
+import serial
 
 class MotorController(Node):
     def __init__(self):
@@ -22,7 +23,7 @@ class MotorController(Node):
         dir = ""
         rpm = ""
         if(abs(z) > 0):
-            if (z > 0):
+            if (z < 0):
                 dir = "d"
             else:
                 dir = "a"
