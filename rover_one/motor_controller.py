@@ -47,13 +47,13 @@ class MotorController(Node):
             rpm = 0
 
         msg = dir + " " + str(int(rpm))
-
+        encoded_msg = bytes(msg, 'utf-8')
 
         self.get_logger().info(msg)
 
         try:
             self.get_logger().info("sending: " + msg)
-            ser.write(msg).encode('utf-8')            
+            ser.write(encoded_msg)         
         except KeyboardInterrupt:
             self.get_logger().info("Closed Serial Comms")
             ser.close()
