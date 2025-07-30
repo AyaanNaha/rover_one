@@ -17,6 +17,11 @@ class MotorController(Node):
 
         self.cmd_vel_sub_ = self.create_subscription(Twist, "/cmd_vel", self.twist_callback, 10)
 
+    def print_serial(self):
+        while True:
+            ser_data = ser.readline()
+            self.get_logger().info(ser_data)
+
     def twist_callback(self, twist: Twist): # read cmd_vel
         x = twist.linear.x
         z = twist.angular.z
@@ -53,7 +58,8 @@ class MotorController(Node):
 
         try:
             self.get_logger().info("sending: " + msg)
-            ser.write(encoded_msg)         
+            ser.write(encoded_msg) 
+            self.get_logger().info("msg sent")                
         except KeyboardInterrupt:
             self.get_logger().info("Closed Serial Comms")
             ser.close()
