@@ -23,7 +23,8 @@ setup(
     tests_require=['pytest'],
     entry_points={
         'console_scripts': [
-            "motor_controller = rover_one.motor_controller:main"
+            "motor_controller = rover_one.motor_controller:main",
+            "read_serial = rover_one.read_serial:main"
         ],
     },
 )
