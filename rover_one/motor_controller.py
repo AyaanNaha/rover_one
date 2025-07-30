@@ -4,10 +4,15 @@ from geometry_msgs.msg import Twist
 import serial
 import time
 
-ser = serial.Serial('/dev/ttyUSB0', 9600, timeout=1.0)
+ser0 = serial.Serial('/dev/ttyUSB0', 9600, timeout=1.0)
 time.sleep(3)
-ser.reset_input_buffer()
-print("serial ok")
+ser0.reset_input_buffer()
+print("serial0 ok")
+
+ser1 = serial.Serial('/dev/ttyUSB1', 9600, timeout=1.0)
+time.sleep(3)
+ser1.reset_input_buffer()
+print("serial1 ok")
 
 class MotorController(Node):
     def __init__(self):
@@ -21,7 +26,7 @@ class MotorController(Node):
         x = twist.linear.x
         z = twist.angular.z
 
-        self.get_logger().info(f"\ncmd_vel.linear.x: ${twist.linear.x}\ncmd_vel.angular.z: ${twist.angular.z}\n")
+        self.get_logger().info(f"\ncmd_vel.linear.x: ${twist.linear.x}\ncmd_vel.angular.z: ${twist.angular.z}")
         
         ## convert cmd_vel into direction and rpm
 
@@ -53,11 +58,14 @@ class MotorController(Node):
 
         try:
             self.get_logger().info("sending: " + msg)
-            ser.write(encoded_msg) 
-            self.get_logger().info("msg sent")                
+            ser0.write(encoded_msg) 
+            self.get_logger().info("msg sent to serial0")
+            ser1.write(encoded_msg) 
+            self.get_logger().info("msg sent to serial1")                
         except KeyboardInterrupt:
             self.get_logger().info("Closed Serial Comms")
-            ser.close()
+            ser0.close()
+            ser1.close()
 
 
 
@@ -74,5 +82,7 @@ def main(args=None):
     node = MotorController()
     rclpy.spin(node)
 
-    ser.close()
+    ser0.close()
+    ser1.close()
+
     rclpy.shutdown()
