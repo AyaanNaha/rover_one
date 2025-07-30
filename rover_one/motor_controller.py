@@ -2,6 +2,12 @@ import rclpy
 from rclpy.node import Node
 from geometry_msgs.msg import Twist
 import serial
+import time
+
+ser = serial.Serial('/dev/ttyAMA0', 9600, timeout=1.0)
+time.sleep(3)
+ser.reset_input_buffer()
+print("serial ok")
 
 class MotorController(Node):
     def __init__(self):
@@ -45,6 +51,12 @@ class MotorController(Node):
 
         self.get_logger().info(msg)
 
+        try:
+            self.get_logger().info("sending: " + msg)
+            ser.write(msg).encode('utf-8')            
+        except KeyboardInterrupt:
+            self.get_logger().info("Closed Serial Comms")
+            ser.close()
 
 
 
@@ -61,4 +73,5 @@ def main(args=None):
     node = MotorController()
     rclpy.spin(node)
 
+    ser.close()
     rclpy.shutdown()
